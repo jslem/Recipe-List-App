@@ -11,6 +11,8 @@ struct RecipeDetailView: View {
     
     var recipe:Recipe
     
+    @State var ingredientIndex:Int = 2
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -18,6 +20,22 @@ struct RecipeDetailView: View {
                 Image(recipe.image)
                     .resizable()
                     .scaledToFill()
+                
+                // MARK: Serving Size Picker
+                VStack (alignment: .leading) {
+                    Text("Select Serving Size")
+                    Picker("", selection: $ingredientIndex) {
+                        Text("2").tag(2)
+                        Text("4").tag(4)
+                        Text("6").tag(6)
+                        Text("8").tag(8)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .frame(width: 200)
+                }
+                .padding()
+               
+                
                     
                 // MARK: Ingredients
                 VStack(alignment: .leading) {
@@ -25,7 +43,7 @@ struct RecipeDetailView: View {
                         .font(.headline)
                         .padding([.bottom, .top], 5)
                     ForEach(recipe.ingredients) { i in
-                        Text("• " + i.name)
+                        Text("• " + RecipeModel.displayPortion(ingredient: i, defaultServingSize: recipe.servings, userServingSize: ingredientIndex) + " " + i.name.lowercased())
                     }
                 }
                 .padding(.horizontal, 5)
